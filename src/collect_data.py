@@ -5,7 +5,7 @@ import os
 # Crée le dossier
 os.makedirs("data", exist_ok=True)
 
-API_KEY = "8fqKeTEALumgXeqylRFDoqMD7xQTU"
+API_KEY = "API_key_public"
 BASE_URL = "https://api.themoviedb.org/3/discover/movie"
 
 # Scraping des films

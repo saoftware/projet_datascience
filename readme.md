@@ -1,4 +1,20 @@
 # Utilisation de l'application
 
-### 1. Lancer les APIs
-uvicorn api.main:app --reload
+### 1. Collect des données via APIs publics
+Executer le fichier de collecte des données
+    - Avoir un compte sur themoviedb
+    - Copier la clé de l'API public à remplacer dans la variables gobale du fichier src/collect_data
+    - Se deplacer dans le dossier en faisant : cd src
+    - Lancer le fichier en tapant : python collect_data.py
+
+### 2. Lancer les APIs
+Cette partie est dependante de la partie 1, s'il n'ya pas de contenu dans le dossier data ou si on veut faire une nouvelle collecte
+
+Activer le fichier venv en tapant : 
+    - Sur Windows : venv\Scripts\activate
+    - Sur Ubuntu : venv\Scripts\activate.bat 
+
+Taper ensuite cette commande pour lancer lancer l'API : uvicorn api.main:app --reload
+
+Lien de l'API : htt://localhost:8000
+Lien de docs l'API : htt://localhost:8000/docs
