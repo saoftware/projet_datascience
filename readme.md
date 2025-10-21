@@ -13,7 +13,7 @@ Executer le fichier de collecte des données
     - Se deplacer dans le dossier en faisant : cd src
     - Lancer le fichier en tapant : python collect_data.py
 
-### 2. Lancer les APIs
+### 3. Lancer les APIs
 Cette partie est dependante de la partie 1, s'il n'ya pas de contenu dans le dossier data ou si on veut faire une nouvelle collecte
 
 Activer le fichier venv en tapant : 
