@@ -1,12 +1,12 @@
 # Utilisation de l'application
 
-### Installation des packages
+### 1. Installation des packages
 
 Creer un dossier d'envrionnement, en tapant à la racine du projet :
     - Pour Windows : python -m venv venv
     - Pour Linux : python3 -m venv venv
 
-### 1. Collect des données via APIs publics
+### 2. Collect des données via APIs publics
 Executer le fichier de collecte des données
     - Avoir un compte sur themoviedb
     - Copier la clé de l'API public à remplacer dans la variables gobale du fichier src/collect_data
