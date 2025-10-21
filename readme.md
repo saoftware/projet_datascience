@@ -1,5 +1,11 @@
 # Utilisation de l'application
 
+### Installation des packages
+
+Creer un dossier d'envrionnement, en tapant à la racine du projet :
+    - Pour Windows : python -m venv venv
+    - Pour Linux : python3 -m venv venv
+
 ### 1. Collect des données via APIs publics
 Executer le fichier de collecte des données
     - Avoir un compte sur themoviedb
@@ -12,7 +18,7 @@ Cette partie est dependante de la partie 1, s'il n'ya pas de contenu dans le dos
 
 Activer le fichier venv en tapant : 
     - Sur Windows : venv\Scripts\activate
-    - Sur Ubuntu : venv\Scripts\activate.bat 
+    - Sur Linux : venv\Scripts\activate.bat 
 
 Taper ensuite cette commande pour lancer lancer l'API : uvicorn api.main:app --reload
 

@@ -22,12 +22,30 @@ app.add_middleware(
 
 films = config.import_data("data/films_fr.csv")
 musiques_import = config.import_data("data/musiques.csv")
-livres_import = config.import_data("data/livres.csv")
+livres_import = config.import_data("data/Librairie_toulouse.csv")
+livres_toulouse_import = config.import_data("data/Librairie_toulouse.csv")
+livres_en_import = config.import_data("data/livres.csv")
 
 # Nétoyage des données
-films = config.traitement_na(films)
-musiques = config.traitement_na(musiques_import)
-livres = config.traitement_na(livres_import)
+df_films = config.traitement_na(films)
+df_musiques = config.traitement_na(musiques_import)
+df_livres_first = config.traitement_na(livres_import)
+livres_toulouse = config.traitement_na(livres_import)
+livres_en = config.traitement_na(livres_import)
+
+livres_toulouse.rename(columns={
+    "year": "annee",
+    "title": "titre",
+    "author": "auteur",
+    "publisher": "genre",
+    "classification": "description",
+    "library": "source"
+}, inplace=True)
+
+livres_toulouse["langue"] = "français"
+
+df_livres = pd.concat([df_livres_first, livres_toulouse], axis=1)
+
 
 @app.get("/", tags=["Recommandations"])
 async def home():
@@ -37,25 +55,25 @@ async def home():
 @app.get("/films/", tags=["Recommandations"])
 async def get_films(titre: str = Query(None, description="Nom ou mot-clé du film")):
     if titre:
-        result = films[films["titre"].str.contains(titre, case=False, na=False)].head(10)
+        result = df_films[df_films["titre"].str.contains(titre, case=False, na=False)].head(10)
     else:
-        result = films.sample(10)
+        result = df_films.sample(10)
     return result.to_dict(orient="records")
 
 # Rechercher une musique
 @app.get("/musiques/", tags=["Recommandations"])
 async def get_musiques(titre: str = Query(None, description="Nom ou mot-clé de la musique")):
     if titre:
-        result = musiques[musiques["titre"].str.contains(titre, case=False, na=False)].head(10)
+        result = df_musiques[df_musiques["titre"].str.contains(titre, case=False, na=False)].head(10)
     else:
-        result = musiques.sample(10)
+        result = df_musiques.sample(10)
     return result.to_dict(orient="records")
 
 # Rechercher un livre
 @app.get("/livres/", tags=["Recommandations"])
 async def get_livres(titre: str = Query(None, description="Titre ou mot-clé du livre")):
     if titre:
-        result = livres[livres["titre"].str.contains(titre, case=False, na=False)].head(10)
+        result = df_livres[df_livres["titre"].str.contains(titre, case=False, na=False)].head(10)
     else:
-        result = livres.sample(10)
+        result = df_livres.sample(10)
     return result.to_dict(orient="records")
