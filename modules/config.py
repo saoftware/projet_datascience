@@ -1,18 +1,53 @@
 import pandas as pd
 import os, csv
+from io import StringIO, BytesIO
 
+# Fonction d'import des données
+def import_data(path):
+    """
+    Charge un fichier CSV ou Excel (chemin local ou fichier uploadé)
+    et renvoie un DataFrame propre.
+    """
+    encodings = ['utf-8', 'latin1', 'ISO-8859-1']
 
-# Fonction d'import des fichiers
-def import_data(path: str):
-    """Charge un Fichier CSVExcel et renvoie un DataFrame."""
-    df = None  # Initialisation
+    if isinstance(path, str):
+        filename = os.path.basename(path)
+        file_extension = os.path.splitext(filename)[1].lower()
+        file_source = path  # lecture directe du disque
+    else:
+        filename = path.name
+        file_extension = os.path.splitext(filename)[1].lower()
+        file_bytes = path.read()
+        file_source = BytesIO(file_bytes)
 
-    try:
-        df = pd.read_csv(path)
-        return df
-    except Exception as e:
-        print("Erreur de chargement : {e}")
-    
+    # Traitement selon l'extension
+    if file_extension == ".csv":
+        for enc in encodings:
+            try:
+                # On lit quelques lignes pour détecter le séparateur
+                if isinstance(file_source, str):
+                    with open(file_source, 'r', encoding=enc, errors='ignore') as f:
+                        sample = f.readline()
+                else:
+                    sample = file_source.getvalue().decode(enc, errors='ignore').splitlines()[0]
+
+                sniffer = csv.Sniffer()
+                dialect = sniffer.sniff(sample)
+                sep = dialect.delimiter
+
+                df = pd.read_csv(file_source, encoding=enc, sep=sep)
+                break
+            except Exception as e:
+                continue
+
+    elif file_extension in [".xls", ".xlsx"]:
+        df = pd.read_excel(file_source, sheet_name=0)
+
+    else:
+        raise ValueError(f"Format non pris en charge : {file_extension}")
+
+    print(f"Fichier chargé : {filename} ({len(df)} lignes, {len(df.columns)} colonnes)")
+    return df
 
 
 # Traitement des valeurs manquantes
@@ -28,9 +63,9 @@ def traitement_na(data):
                 df.drop(columns=[col], inplace=True)
             elif percent_na[col] > 0:
                 if df[col].dtype == "object":
-                    df[col].fillna("Inconnu", inplace=True)
+                    df.fillna({col: "Inconn"}, inplace=True)
                 else:
-                    df[col].fillna(df[col].median(), inplace=True)
+                    df.fillna({col: df[col].median()}, inplace=True)
                     
 
         return df
