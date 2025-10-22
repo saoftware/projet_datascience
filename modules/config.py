@@ -63,9 +63,9 @@ def traitement_na(data):
                 df.drop(columns=[col], inplace=True)
             elif percent_na[col] > 0:
                 if df[col].dtype == "object":
-                    df[col] = df[col].fillna("Inconnu")
+                    df.fillna({col: "Inconnu"}, inplace=True)
                 else:
-                    df[col] = df[col].fillna(df[col].median())
+                    df.fillna({col: df[col].median()}, inplace=True)
                 
         return df
     

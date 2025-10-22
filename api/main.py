@@ -32,17 +32,18 @@ df_films_not_na = config.traitement_na(films)
 df_livres_fr_not_na = config.traitement_na(livres_import_fr)
 livres_toulouse_not_na = config.traitement_na(livres_toulouse_import)
 livres_en_not_na = config.traitement_na(livres_import_en)
-
 df_musiques_not_na = config.traitement_na(musiques_import)
 
 livres_toulouse_not_na.rename(columns={
     "year": "annee",
     "title": "titre",
     "author": "auteur",
-    "publisher": "genre",
-    "classification": "description",
+    "classification": "genre",
+    "publisher": "description",
     "library": "source"
 }, inplace=True)
+
+livres_toulouse_not_na["langue"] = "français"
 
 livres_en_not_na.rename(columns={
     "Year_published": "annee",
@@ -59,7 +60,9 @@ df_films = pd.concat([df_films_fr_not_na, df_films_not_na], ignore_index=True)
 df_livres = pd.concat([df_livres_fr_not_na, livres_toulouse_not_na, livres_en_not_na], ignore_index=True)
 df_musiques = df_musiques_not_na
 
-print("Colonnes du DataFrame :", list(df_films.isnull().sum()))
+df_films.to_csv("data/data_cleaned/films.csv", index=False, encoding="utf-8")
+df_livres.to_csv("data/data_cleaned/livres.csv", index=False, encoding="utf-8")
+df_musiques.to_csv("data/data_cleaned/musiques.csv", index=False, encoding="utf-8")
 
 
 @app.get("/", tags=["Recommandations"])
