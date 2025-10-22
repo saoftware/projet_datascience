@@ -1,15 +1,18 @@
 import requests
 import pandas as pd
 import os
+import time
+
 
 # Crée le dossier
 os.makedirs("data", exist_ok=True)
 
-API_KEY = "API_key_public"
+API_KEY = "API_PUBLIC_KEY"
 BASE_URL = "https://api.themoviedb.org/3/discover/movie"
 
+
 # Scraping des films
-def collect_films(langue, pages=50):
+def collect_films(langue, pages):
     films = []
     for page in range(1, pages + 1):
         try:
@@ -35,7 +38,7 @@ def collect_films(langue, pages=50):
                     "annee": f.get("release_date", "")[:4],
                     "source": f"https://www.themoviedb.org/movie/{f.get('id')}"
                 })
-            time.sleep(0.25)  # pause pour éviter de surcharger le serveur
+            time.sleep(0.25)
         except Exception as e:
             print(f"Erreur page {page} : {e}")
             continue
@@ -43,7 +46,7 @@ def collect_films(langue, pages=50):
 
 
 # Scraping des livres
-def collect_livres(langue, nb=1000):
+def collect_livres(langue, nb):
     livres = []
     base_url = "https://www.googleapis.com/books/v1/volumes"
     query = "livre" if langue == "français" else "book"
@@ -69,7 +72,7 @@ def collect_livres(langue, nb=1000):
 
 
 # Scraping des musiques
-def collect_musiques(langue, nb=1000):
+def collect_musiques(langue, nb):
     musiques = []
     base_url = "https://itunes.apple.com/search"
     pays = "fr" if langue == "français" else "us"
@@ -94,7 +97,7 @@ def collect_musiques(langue, nb=1000):
     return pd.DataFrame(musiques)
 
 
-# Collecte music
+# Collecte musique
 df_music_fr = collect_musiques("français", 2000)
 df_music_en = collect_musiques("anglais", 1000)
 df_music = pd.concat([df_music_fr, df_music_en], ignore_index=True)
@@ -113,9 +116,9 @@ df_books.to_csv("data/livres.csv", index=False, encoding="utf-8")
 print(f"{len(df_books)} livres enregistrés dans data/livres.csv")
 
 
-# Récupérer 1000 films français et 1000 anglais
-df_fr = collect_films("fr-FR", pages=50)
-df_en = collect_films("en-US", pages=50)
+# Récupérer 100 films français et 100 anglais
+df_fr = collect_films("fr-FR", pages=100)
+df_en = collect_films("en-US", pages=100)
 
 # Fusionner et sauvegarder
 df_films = pd.concat([df_en], ignore_index=True)

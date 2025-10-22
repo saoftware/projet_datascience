@@ -59,15 +59,14 @@ def traitement_na(data):
         percent_na = (df.isnull().sum() / len(df)) * 100
         
         for col in df.columns:
-            if percent_na[col] > 0.2:
+            if percent_na[col] > 20:
                 df.drop(columns=[col], inplace=True)
             elif percent_na[col] > 0:
                 if df[col].dtype == "object":
-                    df.fillna({col: "Inconn"}, inplace=True)
+                    df[col] = df[col].fillna("Inconnu")
                 else:
-                    df.fillna({col: df[col].median()}, inplace=True)
-                    
-
+                    df[col] = df[col].fillna(df[col].median())
+                
         return df
     
     except Exception as e:
