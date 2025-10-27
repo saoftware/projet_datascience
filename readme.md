@@ -24,3 +24,5 @@ Taper ensuite cette commande pour lancer lancer l'API : uvicorn api.main:app --r
 
 Lien de l'API : htt://localhost:8000
 Lien de docs l'API : htt://localhost:8000/docs
+
+

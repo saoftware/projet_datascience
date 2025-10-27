@@ -73,14 +73,12 @@ def traitement_na(data):
         print("Erreur de chargement :", e)
         
         
-# Fusion des données
-def fusion_data(data):
+# suppression des données dupliquées
+def drop_doublon(data):
     try:
-        num_cols = data.select_dtypes(exclude="object")
-        cat_cols = data.select_dtypes(include="object")
-        df_fusion = pd.concat([cat_cols, num_cols], axis=1)
-            
-        return df_fusion
+        # Supprimer les doublons
+        result = data.drop_duplicates(subset="titre")
+        return result
     
     except Exception as e:
         print("Erreur de chargement :", e)

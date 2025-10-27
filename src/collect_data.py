@@ -7,7 +7,7 @@ import time
 # Crée le dossier
 os.makedirs("data", exist_ok=True)
 
-API_KEY = "a1cee183fc9b081f6d92111526bcb022"
+API_KEY = "API_KEY"
 BASE_URL = "https://api.themoviedb.org/3/discover/movie"
 
 
@@ -100,7 +100,7 @@ def collect_musiques(langue, nb):
 
 
 # Collecte musique
-"""df_music_fr = collect_musiques("français", 2000)
+df_music_fr = collect_musiques("français", 2000)
 df_music_en = collect_musiques("anglais", 1000)
 df_music = pd.concat([df_music_fr, df_music_en], ignore_index=True)
 
@@ -116,7 +116,7 @@ df_books = pd.concat([df_books_fr, df_books_en], ignore_index=True)
 # Sauvegarde
 df_books.to_csv("data/livres.csv", index=False, encoding="utf-8")
 print(f"{len(df_books)} livres enregistrés dans data/livres.csv")
-"""
+
 
 # Récupérer 100 films français et 100 anglais
 df_fr = collect_films("fr-FR", pages=100)
