@@ -1,8 +1,12 @@
 from fastapi import FastAPI, Query
 from fastapi.middleware.cors import CORSMiddleware
 import pandas as pd
-from modules import data_cleaning, config
 import os
+import sys
+
+# Ajout du chemin pour accéder aux modules
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from modules import data_cleaning, config
 
 app = FastAPI(
     title="Chatbot Culture & Loisirs API",
@@ -20,25 +24,24 @@ app.add_middleware(
 )
 
 
-# Dossiers / fichiers
-DATA_DIR = "data/data_cleaned"
-FILMS_PATH = os.path.join(DATA_DIR, "films.csv")
-LIVRES_PATH = os.path.join(DATA_DIR, "livres.csv")
-MUSIQUES_PATH = os.path.join(DATA_DIR, "musiques.csv")
+# Définir les chemins des fichiers de données nettoyées
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+films_path = os.path.join(BASE_DIR, "data/cleaned/films.csv")
+livres_path = os.path.join(BASE_DIR, "data/cleaned/livres.csv")
+musiques_path = os.path.join(BASE_DIR, "data/cleaned/musiques.csv")
 
 
-# Vérifier si les fichiers existent
-if not (os.path.exists(FILMS_PATH) and os.path.exists(LIVRES_PATH) and os.path.exists(MUSIQUES_PATH)):
+# Vérifier si les fichiers existent, sinon les générer
+if not (os.path.exists(films_path) and os.path.exists(livres_path) and os.path.exists(musiques_path)):
     print("Fichiers manquants : nettoyage et génération en cours...")
     data_cleaning.load_clean_and_save_data()
 else:
     print("Fichiers déjà présents, chargement direct.")
 
-
-# Chargement des données saugardées
-df_films = config.import_data("data/data_cleaned/films.csv")
-df_livres = config.import_data("data/data_cleaned/livres.csv")
-df_musiques  = config.import_data("data/data_cleaned/musiques.csv")
+# Charger les données
+films_df = config.import_data(films_path)
+livres_df = config.import_data(livres_path)
+musiques_df = config.import_data(musiques_path)
 
 
 @app.get("/", tags=["Recommandations"])
@@ -46,43 +49,35 @@ async def home():
     return {"message": "Bienvenue sur l'API Chatbot Culture & Loisirs."}
 
 
-#Rechercher un film
+# Rechercher un film
 @app.get("/films/", tags=["Recommandations"])
-async def films_recommandations(titre: str = Query(None, description="Nom ou mot-clé du film")):
-    try:
-        if titre:
-            result = df_films[df_films["titre"].str.contains(titre, case=False, na=False)].head(10)
-        else:
-            result = df_films.sample(10)
-        
-        return result.to_dict(orient="records")
-    except Exception as e:
-        print("Erreur : ", e)
-
-
-# Rechercher une musique
-@app.get("/musiques/", tags=["Recommandations"])
-async def musiques_recommandations(titre: str = Query(None, description="Nom ou mot-clé de la musique")):
-    try:
-        if titre:
-            result = df_musiques[df_musiques["titre"].str.contains(titre, case=False, na=False)].head(10)
-        else:
-            result = df_musiques.sample(10)
-        
-        return result.to_dict(orient="records")
-    except Exception as e:
-        print("Erreur : ", e)
-
+async def get_films(titre: str = Query(None, description="Titre du film à rechercher")):
+    if titre:
+        # Filtrer par titre
+        results = films_df[films_df['titre'].str.contains(titre, case=False, na=False)]
+        return results.to_dict(orient='records')
+    else:
+        # Retourner un échantillon aléatoire
+        return films_df.sample(min(5, len(films_df))).to_dict(orient='records')
 
 # Rechercher un livre
 @app.get("/livres/", tags=["Recommandations"])
-async def livres_recommandations(titre: str = Query(None, description="Titre ou mot-clé du livre")):
-    try:
-        if titre:
-            result = df_livres[df_livres["titre"].str.contains(titre, case=False, na=False)].head(10)
-        else:
-            result = df_livres.sample(10)
-        
-        return result.to_dict(orient="records")
-    except Exception as e:
-        print("Erreur : ", e)
+async def get_livres(titre: str = Query(None, description="Titre du livre à rechercher")):
+    if titre:
+        # Filtrer par titre
+        results = livres_df[livres_df['titre'].str.contains(titre, case=False, na=False)]
+        return results.to_dict(orient='records')
+    else:
+        # Retourner un échantillon aléatoire
+        return livres_df.sample(min(5, len(livres_df))).to_dict(orient='records')
+
+# Rechercher une musique
+@app.get("/musiques/", tags=["Recommandations"])
+async def get_musiques(titre: str = Query(None, description="Titre de la musique à rechercher")):
+    if titre:
+        # Filtrer par titre
+        results = musiques_df[musiques_df['titre'].str.contains(titre, case=False, na=False)]
+        return results.to_dict(orient='records')
+    else:
+        # Retourner un échantillon aléatoire
+        return musiques_df.sample(min(5, len(musiques_df))).to_dict(orient='records')

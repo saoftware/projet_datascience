@@ -8,6 +8,7 @@ def import_data(path):
     Charge un fichier CSV ou Excel (chemin local ou fichier uploadé)
     et renvoie un DataFrame propre.
     """
+    df = None
     encodings = ['utf-8', 'latin1', 'ISO-8859-1']
 
     if isinstance(path, str):
@@ -45,6 +46,9 @@ def import_data(path):
 
     else:
         raise ValueError(f"Format non pris en charge : {file_extension}")
+    
+    if df is None:
+        raise ValueError(f"Impossible de charger le fichier {filename}")
 
     print(f"Fichier chargé : {filename} ({len(df)} lignes, {len(df.columns)} colonnes)")
     return df

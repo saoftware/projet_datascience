@@ -5,7 +5,8 @@ import os
 
 
 # Dossiers / fichiers
-DATA_DIR = "data/data_cleaned"
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+DATA_DIR = os.path.join(BASE_DIR, "data", "data_cleaned")
 FILMS_PATH = os.path.join(DATA_DIR, "films.csv")
 LIVRES_PATH = os.path.join(DATA_DIR, "livres.csv")
 MUSIQUES_PATH = os.path.join(DATA_DIR, "musiques.csv")
@@ -17,11 +18,10 @@ if not (os.path.exists(FILMS_PATH) and os.path.exists(LIVRES_PATH) and os.path.e
 else:
     print("Fichiers déjà présents, chargement direct.")
 
-
-# Chargement des données saugardées
-df_films = config.import_data("data/data_cleaned/films.csv")
-df_livres = config.import_data("data/data_cleaned/livres.csv")
-df_musiques  = config.import_data("data/data_cleaned/musiques.csv")
+# Utilisation de chemins absolus pour le chargement des données
+df_films = config.import_data(FILMS_PATH)
+df_livres = config.import_data(LIVRES_PATH)
+df_musiques = config.import_data(MUSIQUES_PATH)
 
 
 #Rechercher un film
