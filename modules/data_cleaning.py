@@ -55,7 +55,7 @@ def load_clean_and_save_data():
     df_musiques = config.drop_doublon(df_musiques_save)
     
     # Création du dossier cleaned s'il n'existe pas
-    cleaned_dir = os.path.join(BASE_DIR, "data/cleaned")
+    cleaned_dir = os.path.join(BASE_DIR, "data/data_cleaned")
     if not os.path.exists(cleaned_dir):
         os.makedirs(cleaned_dir)
         
