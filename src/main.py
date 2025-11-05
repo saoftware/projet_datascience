@@ -6,7 +6,9 @@ import sys
 
 # Ajout du chemin pour accéder aux modules
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from modules import data_cleaning, config
+from modules.data_cleaning import load_clean_and_save_data
+from modules.config import import_data
+
 
 app = FastAPI(
     title="Chatbot Culture & Loisirs API",
@@ -26,22 +28,22 @@ app.add_middleware(
 
 # Définir les chemins des fichiers de données nettoyées
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-films_path = os.path.join(BASE_DIR, "data/cleaned/films.csv")
-livres_path = os.path.join(BASE_DIR, "data/cleaned/livres.csv")
-musiques_path = os.path.join(BASE_DIR, "data/cleaned/musiques.csv")
+films_path = os.path.join(BASE_DIR, "data/data_cleaned/films.csv")
+livres_path = os.path.join(BASE_DIR, "data/data_cleaned/livres.csv")
+musiques_path = os.path.join(BASE_DIR, "data/data_cleaned/musiques.csv")
 
 
 # Vérifier si les fichiers existent, sinon les générer
 if not (os.path.exists(films_path) and os.path.exists(livres_path) and os.path.exists(musiques_path)):
     print("Fichiers manquants : nettoyage et génération en cours...")
-    data_cleaning.load_clean_and_save_data()
+    load_clean_and_save_data()
 else:
     print("Fichiers déjà présents, chargement direct.")
 
 # Charger les données
-films_df = config.import_data(films_path)
-livres_df = config.import_data(livres_path)
-musiques_df = config.import_data(musiques_path)
+films_df = import_data(films_path)
+livres_df = import_data(livres_path)
+musiques_df = import_data(musiques_path)
 
 
 @app.get("/", tags=["Recommandations"])
