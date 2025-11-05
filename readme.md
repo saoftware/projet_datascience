@@ -22,8 +22,8 @@ Activer le fichier venv en tapant :
 
 Taper ensuite cette commande pour lancer lancer l'API : uvicorn src.main:app --reload
 
-Lien de l'API : htt://localhost:8000
-Lien de docs l'API : htt://localhost:8000/docs
+Lien de l'API : http://localhost:8000
+Lien de docs l'API : http://localhost:8000/docs
 
 
 Lancer l'application chatbot : streamlit run src/dashboard.py
