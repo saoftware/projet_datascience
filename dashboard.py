@@ -114,21 +114,29 @@ search_method = st.radio(
 
 if search_method == "Par mots-clés":
     keywords = st.text_input("Entrez des mots-clés séparés par des espaces")
-    
-    if st.button("Rechercher") and keywords:
-        st.info("Recherche en cours...")
-        # Simulation de recherche par mots-clés
-        # Dans une implémentation réelle, vous appelleriez votre API ici
-        try:
-            # Exemple de filtrage simple (à remplacer par appel API)
-            results = df[df.apply(lambda row: any(kw.lower() in str(row).lower() for kw in keywords.split()), axis=1)]
-            if not results.empty:
-                st.success(f"{len(results)} résultats trouvés")
-                st.dataframe(results)
-            else:
-                st.warning("Aucun résultat trouvé pour ces mots-clés.")
-        except Exception as e:
-            st.error(f"Erreur lors de la recherche: {e}")
+    col1, col2 = st.columns([1,1])
+
+    with col2:
+        if st.button("Réinitialiser la discussion"):
+            if "messages" in st.session_state:
+                del st.session_state["messages"]
+            st.rerun()
+
+    with col1:
+        if st.button("Rechercher") and keywords:
+            st.info("Recherche en cours...")
+            # Simulation de recherche par mots-clés
+            # Dans une implémentation réelle, vous appelleriez votre API ici
+            try:
+                # Exemple de filtrage simple (à remplacer par appel API)
+                results = df[df.apply(lambda row: any(kw.lower() in str(row).lower() for kw in keywords.split()), axis=1)]
+                if not results.empty:
+                    st.success(f"{len(results)} résultats trouvés")
+                    st.dataframe(results)
+                else:
+                    st.warning("Aucun résultat trouvé pour ces mots-clés.")
+            except Exception as e:
+                st.error(f"Erreur lors de la recherche: {e}")
 
 elif search_method == "Par titre similaire":
     if not df.empty:
@@ -310,10 +318,10 @@ if user_input:
                     pass
             
             # Fallback si ni l'API ni les modules n'ont donné de résultats
-            if not results and not df.empty:
-                title_column = "titre" if "titre" in df.columns else "title" if "title" in df.columns else df.columns[0]
-                sample_df = df.sample(min(5, len(df)))
-                results = [{"titre": row[title_column]} for _, row in sample_df.iterrows()]
+            #if not results and not df.empty:
+            #    title_column = "titre" if "titre" in df.columns else "title" if "title" in df.columns else df.columns[0]
+            #    sample_df = df.sample(min(5, len(df)))
+            #    results = [{"titre": row[title_column]} for _, row in sample_df.iterrows()]
             
             # Construction de la réponse finale
             full_response = intro + "\n\n"
@@ -323,6 +331,7 @@ if user_input:
                     full_response += f"{i}. {item['titre']}\n"
             else:
                 full_response += "Désolé, je n'ai pas trouvé de recommandations correspondant à votre demande. Pourriez-vous préciser davantage ?"
+ 
             
             # Affichage de la réponse finale
             message_placeholder.markdown(full_response)
